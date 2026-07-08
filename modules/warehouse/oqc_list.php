@@ -62,6 +62,7 @@ $rows = fetchAllSafe($pdo, "
 
 $badge         = ['in_progress' => 'warning', 'done' => 'success', 'error' => 'danger'];
 $badgeLabel    = ['in_progress' => 'Đang SX',  'done' => 'Hoàn thành', 'error' => 'Lỗi'];
+$csrf          = generateCSRF();
 
 include $_SERVER['DOCUMENT_ROOT'] . '/erp/includes/header.php';
 include $_SERVER['DOCUMENT_ROOT'] . '/erp/includes/sidebar.php';
@@ -174,6 +175,13 @@ include $_SERVER['DOCUMENT_ROOT'] . '/erp/includes/sidebar.php';
                                class="btn btn-sm btn-outline-primary" title="Tạo phiếu xuất">
                                 <i class="fas fa-truck"></i>
                             </a>
+                            <?php if (hasRole('director')): ?>
+                            <button class="btn btn-sm btn-outline-danger btn-delete-oqc ms-1"
+                                data-id="<?= (int)$row['id'] ?>"
+                                data-label="<?= e($row['product_code'] . ' / ' . $row['order_no']) ?>">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                            <?php endif; ?>
                         </td>
                     </tr>
                 <?php endforeach; ?>
@@ -182,4 +190,27 @@ include $_SERVER['DOCUMENT_ROOT'] . '/erp/includes/sidebar.php';
         </div>
     </div>
 </div></div>
+<?php if (hasRole('director')): ?>
+<script>
+document.querySelectorAll('.btn-delete-oqc').forEach(btn => btn.addEventListener('click', async function () {
+    const id    = this.dataset.id;
+    const label = this.dataset.label;
+    if (!confirm(`Xoá mục OQC: ${label}?\nThao tác này không thể khôi phục.`)) return;
+    try {
+        const fd = new FormData();
+        fd.append('id', id);
+        fd.append('csrf_token', <?= json_encode($csrf) ?>);
+        const res  = await fetch('/erp/api/warehouse/delete_oqc_item.php', { method: 'POST', body: fd });
+        const data = await res.json();
+        if (data.ok) {
+            location.reload();
+        } else {
+            alert('Lỗi: ' + (data.msg || 'Không thể xoá mục OQC'));
+        }
+    } catch (err) {
+        alert('Lỗi kết nối: ' + err.message);
+    }
+}));
+</script>
+<?php endif; ?>
 <?php include $_SERVER['DOCUMENT_ROOT'] . '/erp/includes/footer.php'; ?>

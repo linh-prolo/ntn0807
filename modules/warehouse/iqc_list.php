@@ -132,6 +132,13 @@ include $_SERVER['DOCUMENT_ROOT'] . '/erp/includes/sidebar.php';
                                 data-no="<?= e($row['receipt_no']) ?>">
                                 <i class="fas fa-eye"></i>
                             </button>
+                            <?php if (hasRole('director')): ?>
+                            <button class="btn btn-sm btn-outline-danger btn-delete-iqc ms-1"
+                                data-id="<?= (int)$row['id'] ?>"
+                                data-no="<?= e($row['receipt_no']) ?>">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                            <?php endif; ?>
                         </td>
                     </tr>
                 <?php endforeach; ?>
@@ -439,6 +446,27 @@ document.getElementById('formCreateIqc').addEventListener('submit', async functi
         btn.innerHTML = '<i class="fas fa-save me-1"></i>Lưu phiếu IQC';
     }
 });
+
+// Xoá phiếu IQC (chỉ giám đốc)
+document.querySelectorAll('.btn-delete-iqc').forEach(btn => btn.addEventListener('click', async function () {
+    const id  = this.dataset.id;
+    const no  = this.dataset.no;
+    if (!confirm(`Xoá phiếu IQC ${no}?\nThao tác này sẽ xoá toàn bộ dữ liệu liên quan và không thể khôi phục.`)) return;
+    try {
+        const fd = new FormData();
+        fd.append('id', id);
+        fd.append('csrf_token', <?= json_encode($csrf) ?>);
+        const res  = await fetch('/erp/api/warehouse/delete_iqc.php', { method: 'POST', body: fd });
+        const data = await res.json();
+        if (data.ok) {
+            location.reload();
+        } else {
+            alert('Lỗi: ' + (data.msg || 'Không thể xoá phiếu IQC'));
+        }
+    } catch (err) {
+        alert('Lỗi kết nối: ' + err.message);
+    }
+}));
 
 // Xem chi tiết phiếu
 document.querySelectorAll('.btn-view-items').forEach(btn => btn.addEventListener('click', async function () {
