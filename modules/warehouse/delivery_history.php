@@ -24,6 +24,7 @@ $rows = fetchAllSafe($pdo, "SELECT d.id, d.delivery_no, d.delivery_date, d.sende
 
 include $_SERVER['DOCUMENT_ROOT'] . '/erp/includes/header.php';
 include $_SERVER['DOCUMENT_ROOT'] . '/erp/includes/sidebar.php';
+$csrf = generateCSRF();
 ?>
 <div class="main-content"><div class="container-fluid py-4">
     <div class="d-flex justify-content-between align-items-center mb-4">
@@ -58,7 +59,7 @@ include $_SERVER['DOCUMENT_ROOT'] . '/erp/includes/sidebar.php';
                     <th>Tài xế</th>
                     <th class="text-end">SL Thành phẩm</th>
                     <th class="text-end">SL Lỗi</th>
-                    <th>In</th>
+                    <th>Thao tác</th>
                 </tr>
             </thead>
             <tbody>
@@ -78,6 +79,13 @@ include $_SERVER['DOCUMENT_ROOT'] . '/erp/includes/sidebar.php';
                         <a class="btn btn-sm btn-outline-secondary" target="_blank" href="/erp/modules/warehouse/print_delivery.php?id=<?= (int)$row['id'] ?>">
                             <i class="fas fa-print"></i>
                         </a>
+                        <?php if (hasRole('director')): ?>
+                        <button class="btn btn-sm btn-outline-danger btn-delete-delivery ms-1"
+                            data-id="<?= (int)$row['id'] ?>"
+                            data-no="<?= e($row['delivery_no']) ?>">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                        <?php endif; ?>
                     </td>
                 </tr>
             <?php endforeach; ?>
@@ -85,4 +93,27 @@ include $_SERVER['DOCUMENT_ROOT'] . '/erp/includes/sidebar.php';
         </table>
     </div></div>
 </div></div>
+<?php if (hasRole('director')): ?>
+<script>
+document.querySelectorAll('.btn-delete-delivery').forEach(btn => btn.addEventListener('click', async function () {
+    const id = this.dataset.id;
+    const no = this.dataset.no;
+    if (!confirm(`Xoá phiếu giao hàng ${no}?\nThao tác này sẽ xoá toàn bộ dữ liệu liên quan và không thể khôi phục.`)) return;
+    try {
+        const fd = new FormData();
+        fd.append('id', id);
+        fd.append('csrf_token', <?= json_encode($csrf) ?>);
+        const res  = await fetch('/erp/api/warehouse/delete_delivery.php', { method: 'POST', body: fd });
+        const data = await res.json();
+        if (data.ok) {
+            location.reload();
+        } else {
+            alert('Lỗi: ' + (data.msg || 'Không thể xoá phiếu giao hàng'));
+        }
+    } catch (err) {
+        alert('Lỗi kết nối: ' + err.message);
+    }
+}));
+</script>
+<?php endif; ?>
 <?php include $_SERVER['DOCUMENT_ROOT'] . '/erp/includes/footer.php'; ?>
