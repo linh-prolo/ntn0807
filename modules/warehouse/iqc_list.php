@@ -270,7 +270,12 @@ async function fetchProducts(customerId) {
     if (String(customerId) === String(cachedCustomerId)) return cachedProducts;
     try {
         const res  = await fetch(`/erp/api/warehouse/get_customer_products.php?customer_id=${encodeURIComponent(customerId)}`);
-        const data = await res.json();
+        const text = await res.text();
+        let data;
+        try { data = JSON.parse(text); } catch (e) {
+            console.error('[get_customer_products] Non-JSON response:', text);
+            return [];
+        }
         if (data.ok) {
             cachedCustomerId = customerId;
             cachedProducts   = data.products || [];
@@ -424,7 +429,13 @@ document.getElementById('formCreateIqc').addEventListener('submit', async functi
     try {
         const fd  = new FormData(this);
         const res  = await fetch('/erp/api/warehouse/save_iqc.php', { method: 'POST', body: fd });
-        const data = await res.json();
+        const text = await res.text();
+        let data;
+        try { data = JSON.parse(text); } catch (e) {
+            console.error('[save_iqc] Non-JSON response:', text);
+            alert('Lỗi hệ thống: Phản hồi không hợp lệ từ máy chủ. Vui lòng tải lại trang.');
+            return;
+        }
         if (data.ok) {
             bootstrap.Modal.getInstance(document.getElementById('modalCreateIqc')).hide();
             // Toast thành công
@@ -457,7 +468,13 @@ document.querySelectorAll('.btn-delete-iqc').forEach(btn => btn.addEventListener
         fd.append('id', id);
         fd.append('csrf_token', <?= json_encode($csrf) ?>);
         const res  = await fetch('/erp/api/warehouse/delete_iqc.php', { method: 'POST', body: fd });
-        const data = await res.json();
+        const text = await res.text();
+        let data;
+        try { data = JSON.parse(text); } catch (e) {
+            console.error('[delete_iqc] Non-JSON response:', text);
+            alert('Lỗi hệ thống: Phản hồi không hợp lệ từ máy chủ. Vui lòng tải lại trang.');
+            return;
+        }
         if (data.ok) {
             location.reload();
         } else {
@@ -476,7 +493,13 @@ document.querySelectorAll('.btn-view-items').forEach(btn => btn.addEventListener
     new bootstrap.Modal(document.getElementById('modalIqcItems')).show();
     try {
         const res  = await fetch('/erp/api/warehouse/get_iqc_items.php?receipt_id=' + this.dataset.id);
-        const data = await res.json();
+        const text = await res.text();
+        let data;
+        try { data = JSON.parse(text); } catch (e) {
+            console.error('[get_iqc_items] Non-JSON response:', text);
+            body.innerHTML = '<tr><td colspan="4" class="text-center text-danger">Lỗi tải dữ liệu</td></tr>';
+            return;
+        }
         if (data.ok && data.items.length) {
             body.innerHTML = data.items.map((it, i) => `
                 <tr>

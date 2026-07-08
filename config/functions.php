@@ -136,6 +136,15 @@ function ensurePostCsrf(): void {
     }
 }
 
+// ---- CSRF check cho API endpoint (trả JSON thay vì plain text) ----
+function ensurePostCsrfApi(): void {
+    if (!verifyCSRF($_POST['csrf_token'] ?? '')) {
+        http_response_code(403);
+        echo json_encode(['ok' => false, 'msg' => 'CSRF token không hợp lệ. Vui lòng tải lại trang.']);
+        exit();
+    }
+}
+
 function generateDocNo(PDO $pdo, string $type): string {
     $today = date('Y-m-d');
     $pdo->beginTransaction();

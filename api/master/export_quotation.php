@@ -11,8 +11,8 @@ use PhpOffice\PhpSpreadsheet\Style\Fill;
 use PhpOffice\PhpSpreadsheet\Worksheet\PageSetup;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
-requireLogin();
-requireRole('director', 'accountant', 'manager');
+requireLoginApi();
+requireRoleApi('director', 'accountant', 'manager');
 
 $pdo        = getDBConnection();
 $customerId = (int)($_GET['customer_id'] ?? 0);

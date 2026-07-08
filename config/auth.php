@@ -38,6 +38,24 @@ function requireRole(...$roles) {
     }
 }
 
+// ---- API-safe auth helpers (trả JSON thay vì redirect/HTML) ----
+function requireLoginApi(): void {
+    if (!isLoggedIn()) {
+        http_response_code(401);
+        echo json_encode(['ok' => false, 'msg' => 'Chưa đăng nhập. Vui lòng tải lại trang.']);
+        exit();
+    }
+}
+
+function requireRoleApi(string ...$roles): void {
+    requireLoginApi();
+    if (!hasRole(...$roles)) {
+        http_response_code(403);
+        echo json_encode(['ok' => false, 'msg' => 'Bạn không có quyền thực hiện thao tác này.']);
+        exit();
+    }
+}
+
 // ---- Lấy thông tin user hiện tại ----
 function currentUser() {
     return [

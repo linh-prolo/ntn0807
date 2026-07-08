@@ -3,7 +3,7 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/erp/config/database.php';
 require_once $_SERVER['DOCUMENT_ROOT'] . '/erp/config/auth.php';
 require_once $_SERVER['DOCUMENT_ROOT'] . '/erp/config/functions.php';
 header('Content-Type: application/json');
-requireRole('director');
+requireRoleApi('director');
 
 $pdo  = getDBConnection();
 $body = json_decode(file_get_contents('php://input'), true);

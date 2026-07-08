@@ -2,8 +2,8 @@
 require_once $_SERVER['DOCUMENT_ROOT'] . '/erp/config/database.php';
 require_once $_SERVER['DOCUMENT_ROOT'] . '/erp/config/auth.php';
 header('Content-Type: application/json');
-requireLogin();
-requireRole('director', 'accountant');
+requireLoginApi();
+requireRoleApi('director', 'accountant');
 
 $pdo        = getDBConnection();
 $customerId = (int) ($_GET['customer_id'] ?? 0);

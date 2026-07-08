@@ -3,9 +3,9 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/erp/config/database.php';
 require_once $_SERVER['DOCUMENT_ROOT'] . '/erp/config/auth.php';
 require_once $_SERVER['DOCUMENT_ROOT'] . '/erp/config/functions.php';
 header('Content-Type: application/json');
-requireLogin();
-requireRole('director', 'accountant', 'manager', 'warehouse');
-ensurePostCsrf();
+requireLoginApi();
+requireRoleApi('director', 'accountant', 'manager', 'warehouse');
+ensurePostCsrfApi();
 
 $pdo = getDBConnection();
 $itemId = (int)($_POST['item_id'] ?? 0);

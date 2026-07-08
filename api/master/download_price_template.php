@@ -1,6 +1,6 @@
 <?php
 require_once $_SERVER['DOCUMENT_ROOT'] . '/erp/config/auth.php';
-requireLogin();
+requireLoginApi();
 
 $autoloadPath = $_SERVER['DOCUMENT_ROOT'] . '/erp/vendor/autoload.php';
 $hasSpreadsheet = file_exists($autoloadPath);
