@@ -5,8 +5,8 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/erp/config/functions.php';
 require_once $_SERVER['DOCUMENT_ROOT'] . '/erp/config/bkav.php';
 require_once $_SERVER['DOCUMENT_ROOT'] . '/erp/config/BkavEHoaDonClient.php';
 header('Content-Type: application/json');
-requireLogin();
-requireRole('director', 'accountant');
+requireLoginApi();
+requireRoleApi('director', 'accountant');
 
 define('BKAV_RAW_RESPONSE_MAX_LENGTH', 65535);
 

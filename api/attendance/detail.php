@@ -2,7 +2,7 @@
 require_once $_SERVER['DOCUMENT_ROOT'] . '/erp/config/database.php';
 require_once $_SERVER['DOCUMENT_ROOT'] . '/erp/config/auth.php';
 header('Content-Type: application/json');
-requireRole('director', 'accountant', 'manager', 'production');
+requireRoleApi('director', 'accountant', 'manager', 'production');
 
 $pdo    = getDBConnection();
 $userId = (int)($_GET['user_id'] ?? 0);

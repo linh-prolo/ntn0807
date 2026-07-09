@@ -130,7 +130,13 @@ document.getElementById('formDelivery').addEventListener('submit', async functio
   const valid = [...document.querySelectorAll('.pick-row')].some(chk => chk.checked && Number(chk.closest('tr').querySelector('.row-qty').value) > 0);
   if(!valid){ alert('Vui lòng chọn ít nhất 1 dòng hàng hợp lệ'); return; }
   const res = await fetch('/erp/api/warehouse/save_delivery.php', {method:'POST', body:fd});
-  const data = await res.json();
+  const text = await res.text();
+  let data;
+  try { data = JSON.parse(text); } catch (e) {
+    console.error('[save_delivery] Non-JSON response:', text);
+    alert('Lỗi hệ thống: Phản hồi không hợp lệ từ máy chủ. Vui lòng tải lại trang.');
+    return;
+  }
   if(data.ok){
     alert('Đã tạo phiếu ' + data.delivery_no);
     const printLink = document.getElementById('printLink');

@@ -201,7 +201,13 @@ document.querySelectorAll('.btn-delete-oqc').forEach(btn => btn.addEventListener
         fd.append('id', id);
         fd.append('csrf_token', <?= json_encode($csrf) ?>);
         const res  = await fetch('/erp/api/warehouse/delete_oqc_item.php', { method: 'POST', body: fd });
-        const data = await res.json();
+        const text = await res.text();
+        let data;
+        try { data = JSON.parse(text); } catch (e) {
+            console.error('[delete_oqc_item] Non-JSON response:', text);
+            alert('Lỗi hệ thống: Phản hồi không hợp lệ từ máy chủ. Vui lòng tải lại trang.');
+            return;
+        }
         if (data.ok) {
             location.reload();
         } else {

@@ -2,7 +2,7 @@
 require_once $_SERVER['DOCUMENT_ROOT'] . '/erp/config/database.php';
 require_once $_SERVER['DOCUMENT_ROOT'] . '/erp/config/auth.php';
 header('Content-Type: application/json');
-requireLogin();
+requireLoginApi();
 
 $province_code = trim($_GET['province_code'] ?? '');
 if (empty($province_code)) { echo json_encode([]); exit; }

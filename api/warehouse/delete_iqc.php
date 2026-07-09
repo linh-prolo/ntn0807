@@ -11,9 +11,9 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 }
 
 header('Content-Type: application/json');
-requireLogin();
-requireRole('director');
-ensurePostCsrf();
+requireLoginApi();
+requireRoleApi('director');
+ensurePostCsrfApi();
 
 $id = (int)($_POST['id'] ?? 0);
 if ($id <= 0) {

@@ -3,7 +3,7 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/erp/config/database.php';
 require_once $_SERVER['DOCUMENT_ROOT'] . '/erp/config/auth.php';
 require_once $_SERVER['DOCUMENT_ROOT'] . '/erp/config/bkav.php';
 require_once $_SERVER['DOCUMENT_ROOT'] . '/erp/config/functions.php';
-requireLogin();
+requireLoginApi();
 
 $pdo = getDBConnection();
 $id  = (int)($_GET['id'] ?? 0);

@@ -104,7 +104,13 @@ document.querySelectorAll('.btn-delete-delivery').forEach(btn => btn.addEventLis
         fd.append('id', id);
         fd.append('csrf_token', <?= json_encode($csrf) ?>);
         const res  = await fetch('/erp/api/warehouse/delete_delivery.php', { method: 'POST', body: fd });
-        const data = await res.json();
+        const text = await res.text();
+        let data;
+        try { data = JSON.parse(text); } catch (e) {
+            console.error('[delete_delivery] Non-JSON response:', text);
+            alert('Lỗi hệ thống: Phản hồi không hợp lệ từ máy chủ. Vui lòng tải lại trang.');
+            return;
+        }
         if (data.ok) {
             location.reload();
         } else {

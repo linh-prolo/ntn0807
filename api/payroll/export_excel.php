@@ -4,7 +4,7 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/erp/config/auth.php';
 require_once $_SERVER['DOCUMENT_ROOT'] . '/erp/config/functions.php';
 require_once dirname(__DIR__, 2) . '/vendor/autoload.php';
 
-requireRole('director', 'accountant');
+requireRoleApi('director', 'accountant');
 
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
